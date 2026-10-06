@@ -53,6 +53,12 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+# 🆕 INICIALIZAR BASE DE DATOS AL ARRANCAR LA APP
+# Esto se ejecuta TANTO con `python app.py` COMO con `gunicorn app:app`
+with app.app_context():
+    init_db()
+
+
 # ---------- RUTAS ----------
 @app.route('/')
 def index():
@@ -166,11 +172,9 @@ def priorizacion():
     adoptados = conn.execute("SELECT * FROM perros WHERE estado='Adoptado'").fetchall()
     conn.close()
 
-    # Estadística descriptiva
     total = len(todos)
     total_adoptados = len(adoptados)
 
-    # Promedio días en espera (aproximado)
     dias_promedio = 0
     if adoptados:
         sumas = []
@@ -184,8 +188,6 @@ def priorizacion():
         if sumas:
             dias_promedio = round(sum(sumas) / len(sumas), 1)
 
-    # Priorización: puntaje basado en características
-    # Cachorros y tamaño pequeño se adoptan más rápido (según hipótesis)
     prioridad = []
     for p in todos:
         if p['estado'] == 'Adoptado':
@@ -211,7 +213,6 @@ def priorizacion():
 
     prioridad.sort(key=lambda x: x['score'], reverse=True)
 
-    # Distribuciones
     dist_edad = Counter([p['edad'] for p in todos])
     dist_tamano = Counter([p['tamano'] for p in todos])
     dist_distrito = Counter([p['distrito'] for p in todos])
@@ -226,6 +227,6 @@ def priorizacion():
                            dist_distrito=dict(dist_distrito))
 
 
+# 🆕 Esta parte solo se ejecuta si corres `python app.py` localmente
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True, host='0.0.0.0', port=5000)
