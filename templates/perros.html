@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Perros registrados{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-list"></i> Perros registrados</h1>
+  <p>Explora todos los perros del censo de Puno.</p>
+</div>
+
+<div class="filtros">
+  <a href="{{ url_for('perros') }}" class="chip {% if not filtro %}active{% endif %}">Todos</a>
+  <a href="{{ url_for('perros', estado='En espera') }}" class="chip {% if filtro=='En espera' %}active{% endif %}">En espera</a>
+  <a href="{{ url_for('perros', estado='Adoptado') }}" class="chip {% if filtro=='Adoptado' %}active{% endif %}">Adoptados</a>
+</div>
+
+{% if perros %}
+<div class="cards-grid">
+  {% for p in perros %}
+  <a href="{{ url_for('detalle', pid=p.id) }}" class="perro-card">
+    <div class="perro-img">
+      {% if p.foto %}
+        <img src="{{ url_for('static', filename='uploads/' + p.foto) }}" alt="{{ p.nombre }}">
+      {% else %}
+        <div class="no-img"><i class="fa-solid fa-dog"></i></div>
+      {% endif %}
+      <span class="estado-badge {{ 'adoptado' if p.estado=='Adoptado' else 'espera' }}">
+        {{ p.estado }}
+      </span>
+    </div>
+    <div class="perro-body">
+      <h3>{{ p.nombre }}</h3>
+      <p><i class="fa-solid fa-cake-candles"></i> {{ p.edad }} · <i class="fa-solid fa-ruler"></i> {{ p.tamano }}</p>
+      <p><i class="fa-solid fa-location-dot"></i> {{ p.distrito }}</p>
+      <p class="temper"><i class="fa-solid fa-heart"></i> {{ p.temperamento }}</p>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+  <i class="fa-solid fa-dog"></i>
+  <p>No hay perros registrados aún.</p>
+  <a href="{{ url_for('registrar') }}" class="btn btn-primary">Registrar el primero</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Mapa{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-map-location-dot"></i> Mapa de concentración</h1>
+  <p>Zonas con mayor concentración de perros reportados en Puno.</p>
+</div>
+
+<div id="mapa" class="mapa"></div>
+
+<div class="mapa-legend">
+  <div><span class="dot verde"></span> En espera</div>
+  <div><span class="dot azul"></span> Adoptado</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const perros = {{ perros|tojson }};
+
+const map = L.map('mapa').setView([-15.8402, -70.0219], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap · PATY HOUSE'
+}).addTo(map);
+
+// Círculo referencial de Puno ciudad
+L.circle([-15.8402, -70.0219], { radius: 2500, color: '#0d9488', fillOpacity: 0.05 }).addTo(map);
+
+perros.forEach(p => {
+  const color = p.estado === 'Adoptado' ? '#3b82f6' : '#0d9488';
+  const marker = L.circleMarker([p.latitud, p.longitud], {
+    radius: 9, color: '#fff', weight: 2, fillColor: color, fillOpacity: 0.9
+  }).addTo(map);
+  marker.bindPopup(`
+    <b>${p.nombre}</b><br>
+    <small>${p.edad} · ${p.tamano}</small><br>
+    <small><i>${p.distrito}</i></small><br>
+    <span style="color:${color};font-weight:bold;">${p.estado}</span>
+  `);
+});
+</script>
+{% endblock %}

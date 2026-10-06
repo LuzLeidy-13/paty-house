@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Priorización{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-chart-line"></i> Priorización estadística de adopción</h1>
+  <p>Análisis de las características que se asocian a mayor velocidad de adopción, usando <b>datos propios de Puno</b>.</p>
+</div>
+
+<section class="stats-grid">
+  <div class="stat-box"><i class="fa-solid fa-dog"></i><h3>{{ total }}</h3><p>Total registrados</p></div>
+  <div class="stat-box"><i class="fa-solid fa-heart"></i><h3>{{ total_adoptados }}</h3><p>Adoptados</p></div>
+  <div class="stat-box"><i class="fa-solid fa-clock"></i><h3>{{ dias_promedio }}</h3><p>Días promedio en espera</p></div>
+  <div class="stat-box"><i class="fa-solid fa-arrow-up-right-dots"></i><h3>{{ prioridad|length }}</h3><p>Prioritarios en espera</p></div>
+</section>
+
+<div class="chart-grid">
+  <div class="chart-card">
+    <h3><i class="fa-solid fa-cake-candles"></i> Distribución por edad</h3>
+    {% set max_e = dist_edad.values()|list|max if dist_edad else 1 %}
+    {% for k, v in dist_edad.items() %}
+    <div class="bar-row">
+      <span>{{ k }}</span>
+      <div class="bar"><div class="fill" style="width: {{ (v / max_e * 100)|round }}%"></div></div>
+      <b>{{ v }}</b>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="chart-card">
+    <h3><i class="fa-solid fa-ruler"></i> Distribución por tamaño</h3>
+    {% set max_t = dist_tamano.values()|list|max if dist_tamano else 1 %}
+    {% for k, v in dist_tamano.items() %}
+    <div class="bar-row">
+      <span>{{ k }}</span>
+      <div class="bar"><div class="fill alt" style="width: {{ (v / max_t * 100)|round }}%"></div></div>
+      <b>{{ v }}</b>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="chart-card">
+    <h3><i class="fa-solid fa-location-dot"></i> Distribución por distrito</h3>
+    {% set max_d = dist_distrito.values()|list|max if dist_distrito else 1 %}
+    {% for k, v in dist_distrito.items() %}
+    <div class="bar-row">
+      <span>{{ k }}</span>
+      <div class="bar"><div class="fill alt2" style="width: {{ (v / max_d * 100)|round }}%"></div></div>
+      <b>{{ v }}</b>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<h2 class="section-title"><i class="fa-solid fa-ranking-star"></i> Ranking de prioridad de publicación</h2>
+<p class="hint">Puntaje calculado según edad, tamaño, salud, temperamento y calidad de foto. Publica primero los de mayor puntaje.</p>
+
+{% if prioridad %}
+<table class="tabla-ranking">
+  <thead>
+    <tr>
+      <th>#</th><th>Foto</th><th>Nombre</th><th>Edad</th><th>Tamaño</th>
+      <th>Distrito</th><th>Score</th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in prioridad %}
+    <tr>
+      <td><b>{{ loop.index }}</b></td>
+      <td>
+        {% if item.perro.foto %}
+          <img class="mini" src="{{ url_for('static', filename='uploads/' + item.perro.foto) }}">
+        {% else %}
+          <div class="mini no-img"><i class="fa-solid fa-dog"></i></div>
+        {% endif %}
+      </td>
+      <td>{{ item.perro.nombre }}</td>
+      <td>{{ item.perro.edad }}</td>
+      <td>{{ item.perro.tamano }}</td>
+      <td>{{ item.perro.distrito }}</td>
+      <td><span class="score">{{ item.score }}</span></td>
+      <td><a href="{{ url_for('detalle', pid=item.perro.id) }}" class="btn btn-small">Ver</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty">
+  <i class="fa-solid fa-chart-simple"></i>
+  <p>Aún no hay perros en espera para priorizar.</p>
+  <a href="{{ url_for('registrar') }}" class="btn btn-primary">Registrar perro</a>
+</div>
+{% endif %}
+
+<div class="nota">
+  <i class="fa-solid fa-circle-info"></i>
+  <p><b>Metodología:</b> Este ranking se basa en hipótesis derivadas de la observación local (cachorros, tamaño pequeño y buenas fotos se adoptan más rápido). Con 100–150 casos históricos se validará estadísticamente y se ajustará el modelo.</p>
+</div>
+{% endblock %}

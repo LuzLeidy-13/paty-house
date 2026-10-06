@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-text">
+    <span class="badge">Puno · Perú</span>
+    <h1>Sistema de Registro y Priorización de <span class="highlight">Adopción Canina</span></h1>
+    <p>Construyendo el primer dataset propio de perros en situación de calle en Puno. Registra, visualiza y prioriza adopciones con datos reales.</p>
+    <div class="hero-actions">
+      <a href="{{ url_for('registrar') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Registrar perro</a>
+      <a href="{{ url_for('perros') }}" class="btn btn-outline"><i class="fa-solid fa-list"></i> Ver registros</a>
+    </div>
+  </div>
+  <div class="hero-img">
+    <div class="stat-card">
+      <i class="fa-solid fa-paw"></i>
+      <h3>{{ total }}</h3>
+      <p>Perros registrados</p>
+    </div>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <div class="stat-box">
+    <i class="fa-solid fa-dog"></i>
+    <h3>{{ total }}</h3>
+    <p>Total registrados</p>
+  </div>
+  <div class="stat-box">
+    <i class="fa-solid fa-heart"></i>
+    <h3>{{ adoptados }}</h3>
+    <p>Adoptados</p>
+  </div>
+  <div class="stat-box">
+    <i class="fa-solid fa-hourglass-half"></i>
+    <h3>{{ en_espera }}</h3>
+    <p>En espera</p>
+  </div>
+  <div class="stat-box">
+    <i class="fa-solid fa-map-location-dot"></i>
+    <h3>{{ distritos }}</h3>
+    <p>Distritos cubiertos</p>
+  </div>
+</section>
+
+<section class="info-grid">
+  <div class="info-card">
+    <i class="fa-solid fa-clipboard-list"></i>
+    <h3>Módulo 1 — Registro y censo geolocalizado</h3>
+    <p>Formulario de registro de perros encontrados o rescatados con mapa interactivo de las zonas de mayor concentración en Puno.</p>
+  </div>
+  <div class="info-card">
+    <i class="fa-solid fa-chart-line"></i>
+    <h3>Módulo 2 — Priorización estadística</h3>
+    <p>Análisis de qué características (edad, tamaño, foto) se asocian a una mayor velocidad de adopción.</p>
+  </div>
+</section>
+
+<section class="aliados">
+  <h2>Aliados del proyecto</h2>
+  <div class="aliados-grid">
+    <div class="aliado"><i class="fa-solid fa-building-columns"></i><p>Municipalidad Provincial de Puno</p></div>
+    <div class="aliado"><i class="fa-solid fa-paw"></i><p>Asociación Patitas Felices</p></div>
+    <div class="aliado"><i class="fa-solid fa-stethoscope"></i><p>Facultad de Veterinaria — UNA Puno</p></div>
+    <div class="aliado"><i class="fa-solid fa-users"></i><p>Vecinos y adoptantes</p></div>
+  </div>
+</section>
+{% endblock %}

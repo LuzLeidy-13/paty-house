@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Registrar perro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-plus"></i> Registrar perro rescatado</h1>
+  <p>Completa los datos para añadirlo al censo geolocalizado de Puno.</p>
+</div>
+
+<form method="POST" enctype="multipart/form-data" class="form-card">
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Nombre del perro</label>
+      <input type="text" name="nombre" placeholder="Ej. Firulais (o dejar vacío)" >
+    </div>
+
+    <div class="form-group">
+      <label>Edad estimada *</label>
+      <select name="edad" required>
+        <option value="">Seleccionar...</option>
+        <option value="Cachorro">Cachorro (&lt; 1 año)</option>
+        <option value="Joven">Joven (1-3 años)</option>
+        <option value="Adulto">Adulto (4-7 años)</option>
+        <option value="Senior">Senior (+7 años)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Tamaño *</label>
+      <select name="tamano" required>
+        <option value="">Seleccionar...</option>
+        <option value="Pequeño">Pequeño</option>
+        <option value="Mediano">Mediano</option>
+        <option value="Grande">Grande</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Estado de salud aparente *</label>
+      <select name="estado_salud" required>
+        <option value="">Seleccionar...</option>
+        <option value="Saludable">Saludable</option>
+        <option value="Herido">Herido / Lesionado</option>
+        <option value="Desnutrido">Desnutrido</option>
+        <option value="Enfermo">Enfermo</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>¿Esterilizado? *</label>
+      <select name="esterilizado" required>
+        <option value="">Seleccionar...</option>
+        <option value="Sí">Sí</option>
+        <option value="No">No</option>
+        <option value="No sabe">No sabe</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Temperamento observado *</label>
+      <select name="temperamento" required>
+        <option value="">Seleccionar...</option>
+        <option value="Juguetón">Juguetón</option>
+        <option value="Tranquilo">Tranquilo</option>
+        <option value="Tímido">Tímido</option>
+        <option value="Agresivo">Agresivo</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Distrito / Zona *</label>
+      <select name="distrito" required>
+        <option value="">Seleccionar...</option>
+        <option value="Puno ciudad">Puno ciudad</option>
+        <option value="Bellavista">Bellavista</option>
+        <option value="Salcedo">Salcedo</option>
+        <option value="Vallecito">Vallecito</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Foto del perro</label>
+      <input type="file" name="foto" accept="image/*">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Descripción / Observaciones</label>
+    <textarea name="descripcion" rows="3" placeholder="Detalles adicionales: comportamiento, señas particulares, etc."></textarea>
+  </div>
+
+  <input type="hidden" name="latitud" id="latitud">
+  <input type="hidden" name="longitud" id="longitud">
+
+  <button type="button" class="btn btn-outline" onclick="obtenerUbicacion()">
+    <i class="fa-solid fa-location-crosshairs"></i> Obtener mi ubicación GPS
+  </button>
+  <span id="gps-status" class="gps-status"></span>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Guardar registro</button>
+    <a href="{{ url_for('index') }}" class="btn btn-outline">Cancelar</a>
+  </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function obtenerUbicacion() {
+  const status = document.getElementById('gps-status');
+  if (!navigator.geolocation) {
+    status.textContent = '❌ Tu navegador no soporta geolocalización';
+    return;
+  }
+  status.textContent = '⏳ Obteniendo ubicación...';
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      document.getElementById('latitud').value = pos.coords.latitude.toFixed(6);
+      document.getElementById('longitud').value = pos.coords.longitude.toFixed(6);
+      status.textContent = `✅ Ubicación capturada (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`;
+    },
+    (err) => { status.textContent = '❌ No se pudo obtener la ubicación'; },
+    { enableHighAccuracy: true, timeout: 8000 }
+  );
+}
+</script>
+{% endblock %}

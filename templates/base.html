@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}PATY HOUSE{% endblock %} | Adopción Canina Puno</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container nav-inner">
+    <a href="{{ url_for('index') }}" class="logo">
+      <i class="fa-solid fa-dog"></i>
+      <span>PATY <b>HOUSE</b></span>
+    </a>
+    <nav>
+      <a href="{{ url_for('index') }}"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="{{ url_for('registrar') }}"><i class="fa-solid fa-plus"></i> Registrar</a>
+      <a href="{{ url_for('perros') }}"><i class="fa-solid fa-list"></i> Perros</a>
+      <a href="{{ url_for('mapa') }}"><i class="fa-solid fa-map-location-dot"></i> Mapa</a>
+      <a href="{{ url_for('priorizacion') }}"><i class="fa-solid fa-chart-line"></i> Priorización</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>🐾 PATY HOUSE — Sistema de Registro y Priorización de Adopción Canina · Puno, Perú</p>
+    <p class="small">Equipo: Pilar · Blanca · Leydy · Luz</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
