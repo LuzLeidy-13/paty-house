@@ -4,8 +4,9 @@
 {% block content %}
 <div class="page-header">
   <h1><i class="fa-solid fa-plus"></i> Registrar perro rescatado</h1>
-  <p>Completa los datos para añadirlo al censo geolocalizado de Puno.</p>
+  <p>Serás identificado como <b>{{ session.get('nombre') }}</b> (rol: <span class="tipo-tag">{{ session.get('rol') }}</span>)</p>
 </div>
+
 
 <form method="POST" enctype="multipart/form-data" class="form-card">
   <div class="form-grid">

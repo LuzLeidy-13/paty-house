@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}{{ perro.nombre }}{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('perros') }}" class="btn btn-outline back-btn"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+
+<div class="detalle-grid">
+  <div class="detalle-img">
+    {% if perro.foto %}
+      <img src="{{ url_for('static', filename='uploads/' + perro.foto) }}" alt="{{ perro.nombre }}">
+    {% else %}
+      <div class="no-img big"><i class="fa-solid fa-dog"></i></div>
+    {% endif %}
+  </div>
+
+  <div class="detalle-info">
+    <span class="estado-badge {{ 'adoptado' if perro.estado=='Adoptado' else 'espera' }}">{{ perro.estado }}</span>
+    <h1>{{ perro.nombre }}</h1>
+    <p class="desc">{{ perro.descripcion or 'Sin descripción.' }}</p>
+    {% if perro.institucion %}
+      <p class="institucion-tag"><i class="fa-solid fa-building"></i> Registrado por: <b>{{ perro.institucion }}</b></p>
+    {% endif %}
+
+    <table class="tabla-detalle">
+      <tr><td><i class="fa-solid fa-cake-candles"></i> Edad</td><td>{{ perro.edad }}</td></tr>
+      <tr><td><i class="fa-solid fa-ruler"></i> Tamaño</td><td>{{ perro.tamano }}</td></tr>
+      <tr><td><i class="fa-solid fa-notes-medical"></i> Salud</td><td>{{ perro.estado_salud }}</td></tr>
+      <tr><td><i class="fa-solid fa-syringe"></i> Esterilizado</td><td>{{ perro.esterilizado }}</td></tr>
+      <tr><td><i class="fa-solid fa-heart"></i> Temperamento</td><td>{{ perro.temperamento }}</td></tr>
+      <tr><td><i class="fa-solid fa-location-dot"></i> Distrito</td><td>{{ perro.distrito }}</td></tr>
+      <tr><td><i class="fa-solid fa-calendar"></i> Registrado</td><td>{{ perro.fecha_registro }}</td></tr>
+      {% if perro.fecha_adopcion %}
+        <tr><td><i class="fa-solid fa-check"></i> Adoptado</td><td>{{ perro.fecha_adopcion }}</td></tr>
+      {% endif %}
+    </table>
+
+    {% if perro.estado != 'Adoptado' %}
+      <a href="{{ url_for('solicitar', pid=perro.id) }}" class="btn btn-primary btn-lg" style="margin-bottom:12px;">
+        <i class="fa-solid fa-heart"></i> Quiero adoptarlo
+      </a>
+    {% endif %}
+
+    {% if session.get('rol') in ('admin', 'albergue') and perro.estado != 'Adoptado' %}
+      <form method="POST" action="{{ url_for('adoptar', pid=perro.id) }}">
+        <button type="submit" class="btn btn-outline">
+          <i class="fa-solid fa-check"></i> Registrar adopción directa
+        </button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+<!-- HISTORIAL CLÍNICO -->
+<section class="seccion-historial">
+  <h2><i class="fa-solid fa-notes-medical"></i> Historial clínico</h2>
+  {% if historial %}
+    <table class="tabla-ranking">
+      <thead><tr><th>Fecha</th><th>Tipo</th><th>Descripción</th><th>Veterinario</th></tr></thead>
+      <tbody>
+        {% for h in historial %}
+          <tr>
+            <td>{{ h.fecha }}</td>
+            <td><span class="tipo-tag">{{ h.tipo }}</span></td>
+            <td>{{ h.descripcion }}</td>
+            <td>{{ h.veterinario or '—' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="hint">Aún no hay registros clínicos para este perro.</p>
+  {% endif %}
+
+  {% if session.get('rol') in ('admin', 'veterinaria') %}
+  <div class="form-card" style="margin-top:20px;">
+    <h3>Añadir registro clínico</h3>
+    <form method="POST" action="{{ url_for('agregar_historial', pid=perro.id) }}">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select name="tipo" required>
+            <option value="">Seleccionar...</option>
+            <option value="Vacuna">Vacuna</option>
+            <option value="Esterilización">Esterilización</option>
+            <option value="Consulta">Consulta médica</option>
+            <option value="Tratamiento">Tratamiento</option>
+            <option value="Desparasitación">Desparasitación</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fecha</label>
+          <input type="date" name="fecha" required>
+        </div>
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label>Descripción</label>
+          <textarea name="descripcion" rows="2" required placeholder="Ej: Vacuna antirrábica aplicada"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Veterinario</label>
+          <input type="text" name="veterinario" placeholder="Nombre del veterinario">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Guardar</button>
+    </form>
+  </div>
+  {% endif %}
+</section>
+
+<!-- SOLICITUDES (solo admin y albergue) -->
+{% if solicitudes %}
+<section class="seccion-historial">
+  <h2><i class="fa-solid fa-inbox"></i> Solicitudes de adopción para este perro</h2>
+  <table class="tabla-ranking">
+    <thead><tr><th>Fecha</th><th>Solicitante</th><th>Teléfono</th><th>Estado</th></tr></thead>
+    <tbody>
+      {% for s in solicitudes %}
+        <tr>
+          <td>{{ s.fecha_solicitud }}</td>
+          <td>{{ s.nombre }}</td>
+          <td>{{ s.telefono or '—' }}</td>
+          <td><span class="estado-badge {{ 'adoptado' if s.estado=='Aprobada' else 'espera' }}">{{ s.estado }}</span></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+{% endblock %}

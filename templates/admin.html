@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Panel Admin{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-shield-halved"></i> Panel de administración</h1>
+  <p>Solo el equipo PATY HOUSE puede ver esta sección.</p>
+</div>
+
+<section class="info-grid">
+  <div class="info-card">
+    <h3><i class="fa-solid fa-user-plus"></i> Crear nuevo usuario</h3>
+    <form method="POST" action="{{ url_for('crear_usuario') }}" style="margin-top:14px;">
+      <div class="form-group">
+        <label>Usuario</label>
+        <input type="text" name="username" required>
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="text" name="password" required>
+      </div>
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input type="text" name="nombre" required>
+      </div>
+      <div class="form-group">
+        <label>Rol</label>
+        <select name="rol" required>
+          <option value="admin">Administrador</option>
+          <option value="municipalidad">Municipalidad</option>
+          <option value="albergue">Albergue / Patitas Felices</option>
+          <option value="veterinaria">Veterinaria UNAP</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Crear usuario</button>
+    </form>
+  </div>
+
+  <div class="info-card">
+    <h3><i class="fa-solid fa-users"></i> Usuarios del sistema</h3>
+    <table class="tabla-ranking" style="margin-top:14px;">
+      <thead><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th></th></tr></thead>
+      <tbody>
+        {% for u in usuarios %}
+          <tr>
+            <td><b>{{ u.username }}</b></td>
+            <td>{{ u.nombre }}</td>
+            <td><span class="tipo-tag">{{ u.rol }}</span></td>
+            <td>
+              {% if u.id != session.get('user_id') %}
+              <form method="POST" action="{{ url_for('eliminar_usuario', uid=u.id) }}">
+                <button class="btn btn-small" onclick="return confirm('¿Eliminar este usuario?')">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </form>
+              {% else %}
+                <span class="hint">Tú</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

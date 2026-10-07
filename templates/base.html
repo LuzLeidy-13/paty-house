@@ -13,15 +13,44 @@
 <header class="navbar">
   <div class="container nav-inner">
     <a href="{{ url_for('index') }}" class="logo">
-      <i class="fa-solid fa-dog"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="38" height="38">
+        <defs>
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0d9488"/>
+            <stop offset="100%" stop-color="#0f766e"/>
+          </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="95" fill="url(#grad)"/>
+        <g fill="#fff">
+          <ellipse cx="100" cy="130" rx="25" ry="22"/>
+          <ellipse cx="72" cy="98" rx="12" ry="14"/>
+          <ellipse cx="90" cy="82" rx="12" ry="14"/>
+          <ellipse cx="110" cy="82" rx="12" ry="14"/>
+          <ellipse cx="128" cy="98" rx="12" ry="14"/>
+        </g>
+        <path d="M100 118 C 92 110, 82 112, 82 122 C 82 130, 100 140, 100 140 C 100 140, 118 130, 118 122 C 118 112, 108 110, 100 118 Z" fill="#fbbf24"/>
+      </svg>
       <span>PATY <b>HOUSE</b></span>
     </a>
     <nav>
       <a href="{{ url_for('index') }}"><i class="fa-solid fa-house"></i> Inicio</a>
-      <a href="{{ url_for('registrar') }}"><i class="fa-solid fa-plus"></i> Registrar</a>
       <a href="{{ url_for('perros') }}"><i class="fa-solid fa-list"></i> Perros</a>
       <a href="{{ url_for('mapa') }}"><i class="fa-solid fa-map-location-dot"></i> Mapa</a>
       <a href="{{ url_for('priorizacion') }}"><i class="fa-solid fa-chart-line"></i> Priorización</a>
+      {% if session.get('user_id') %}
+        <a href="{{ url_for('registrar') }}"><i class="fa-solid fa-plus"></i> Registrar</a>
+        {% if session.get('rol') in ('admin', 'albergue') %}
+          <a href="{{ url_for('solicitudes') }}"><i class="fa-solid fa-inbox"></i> Solicitudes</a>
+        {% endif %}
+        {% if session.get('rol') == 'admin' %}
+          <a href="{{ url_for('admin_panel') }}"><i class="fa-solid fa-shield-halved"></i> Admin</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}" class="nav-user">
+          <i class="fa-solid fa-user"></i> {{ session.get('nombre') }} <span class="rol-tag">{{ session.get('rol') }}</span>
+        </a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión</a>
+      {% endif %}
     </nav>
   </div>
 </header>
@@ -34,14 +63,13 @@
       {% endfor %}
     {% endif %}
   {% endwith %}
-
   {% block content %}{% endblock %}
 </main>
 
 <footer class="footer">
   <div class="container">
     <p>🐾 PATY HOUSE — Sistema de Registro y Priorización de Adopción Canina · Puno, Perú</p>
-    <p class="small">Equipo: Pilar · Blanca · Leydy · Luz</p>
+    <p class="small">Equipo: Pilar · Blanca · Leydy · Luz · UNAP 2025</p>
   </div>
 </footer>
 

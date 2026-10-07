@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Solicitar adopción{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-heart"></i> Solicitud de adopción</h1>
+  <p>Estás solicitando adoptar a <b>{{ perro.nombre }}</b>. Completa el formulario y el albergue te contactará.</p>
+</div>
+
+<div class="solicitar-card">
+  <div class="solicitar-perro">
+    {% if perro.foto %}
+      <img src="{{ url_for('static', filename='uploads/' + perro.foto) }}">
+    {% else %}
+      <div class="no-img big"><i class="fa-solid fa-dog"></i></div>
+    {% endif %}
+    <div>
+      <h3>{{ perro.nombre }}</h3>
+      <p>{{ perro.edad }} · {{ perro.tamano }} · {{ perro.distrito }}</p>
+    </div>
+  </div>
+
+  <form method="POST" class="form-card">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombre completo *</label>
+        <input type="text" name="nombre" required>
+      </div>
+      <div class="form-group">
+        <label>DNI *</label>
+        <input type="text" name="dni" required maxlength="8">
+      </div>
+      <div class="form-group">
+        <label>Teléfono *</label>
+        <input type="text" name="telefono" required>
+      </div>
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" name="email">
+      </div>
+      <div class="form-group">
+        <label>Distrito donde vives *</label>
+        <select name="distrito" required>
+          <option value="">Seleccionar...</option>
+          <option>Puno ciudad</option>
+          <option>Bellavista</option>
+          <option>Salcedo</option>
+          <option>Vallecito</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tipo de vivienda *</label>
+        <select name="vivienda" required>
+          <option value="">Seleccionar...</option>
+          <option>Casa con patio</option>
+          <option>Casa sin patio</option>
+          <option>Departamento</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>¿Tienes otras mascotas? *</label>
+        <select name="tiene_mascotas" required>
+          <option value="">Seleccionar...</option>
+          <option>Sí</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>¿Aceptas seguimiento post-adopción? *</label>
+        <select name="acepta_seguimiento" required>
+          <option value="">Seleccionar...</option>
+          <option>Sí</option>
+          <option>No</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>¿Por qué quieres adoptar a este perro? *</label>
+      <textarea name="motivacion" rows="4" required placeholder="Cuéntanos tu motivación..."></textarea>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Enviar solicitud</button>
+      <a href="{{ url_for('detalle', pid=perro.id) }}" class="btn btn-outline">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

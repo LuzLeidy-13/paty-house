@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Solicitudes{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-inbox"></i> Solicitudes de adopción</h1>
+  <p>Aprueba o rechaza solicitudes de adopción.</p>
+</div>
+
+{% if solicitudes %}
+<div class="cards-grid">
+  {% for s in solicitudes %}
+  <div class="perro-card solicitud-card">
+    <div class="perro-img">
+      {% if s.perro_foto %}
+        <img src="{{ url_for('static', filename='uploads/' + s.perro_foto) }}">
+      {% else %}
+        <div class="no-img"><i class="fa-solid fa-dog"></i></div>
+      {% endif %}
+      <span class="estado-badge {{ 'adoptado' if s.estado=='Aprobada' else ('espera' if s.estado=='Pendiente' else 'rechazada') }}">{{ s.estado }}</span>
+    </div>
+    <div class="perro-body">
+      <h3>{{ s.perro_nombre }}</h3>
+      <p><i class="fa-solid fa-user"></i> {{ s.nombre }}</p>
+      <p><i class="fa-solid fa-id-card"></i> DNI: {{ s.dni }}</p>
+      <p><i class="fa-solid fa-phone"></i> {{ s.telefono or '—' }}</p>
+      <p><i class="fa-solid fa-envelope"></i> {{ s.email or '—' }}</p>
+      <p><i class="fa-solid fa-house"></i> {{ s.vivienda or '—' }}</p>
+      <p><i class="fa-solid fa-paw"></i> ¿Otras mascotas? {{ s.tiene_mascotas or '—' }}</p>
+      <p class="motivacion"><b>Motivación:</b> {{ s.motivacion }}</p>
+
+      {% if s.estado == 'Pendiente' %}
+      <form method="POST" action="{{ url_for('resolver_solicitud', sid=s.id, accion='aprobar') }}" style="display:inline;">
+        <input type="hidden" name="respuesta" value="Solicitud aprobada. Nos pondremos en contacto.">
+        <button class="btn btn-primary btn-small"><i class="fa-solid fa-check"></i> Aprobar</button>
+      </form>
+      <form method="POST" action="{{ url_for('resolver_solicitud', sid=s.id, accion='rechazar') }}" style="display:inline;">
+        <input type="hidden" name="respuesta" value="Lo sentimos, esta solicitud no fue aceptada.">
+        <button class="btn btn-outline btn-small" style="border-color:#ef4444;color:#ef4444;">
+          <i class="fa-solid fa-xmark"></i> Rechazar
+        </button>
+      </form>
+      {% else %}
+        <p class="hint">Atendido por: <b>{{ s.atendido_por or '—' }}</b></p>
+        <p class="hint">{{ s.respuesta }}</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+  <i class="fa-solid fa-inbox"></i>
+  <p>No hay solicitudes aún.</p>
+</div>
+{% endif %}
+{% endblock %}

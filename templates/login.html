@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Iniciar sesión{% endblock %}
+
+{% block content %}
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-header">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="64" height="64">
+        <defs>
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0d9488"/>
+            <stop offset="100%" stop-color="#0f766e"/>
+          </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="95" fill="url(#grad)"/>
+        <g fill="#fff">
+          <ellipse cx="100" cy="130" rx="25" ry="22"/>
+          <ellipse cx="72" cy="98" rx="12" ry="14"/>
+          <ellipse cx="90" cy="82" rx="12" ry="14"/>
+          <ellipse cx="110" cy="82" rx="12" ry="14"/>
+          <ellipse cx="128" cy="98" rx="12" ry="14"/>
+        </g>
+        <path d="M100 118 C 92 110, 82 112, 82 122 C 82 130, 100 140, 100 140 C 100 140, 118 130, 118 122 C 118 112, 108 110, 100 118 Z" fill="#fbbf24"/>
+      </svg>
+      <h2>PATY HOUSE</h2>
+      <p>Panel de instituciones aliadas</p>
+    </div>
+
+    <form method="POST">
+      <div class="form-group">
+        <label>Usuario</label>
+        <input type="text" name="username" required autofocus>
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" name="password" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg">
+        <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+      </button>
+    </form>
+
+    <div class="login-hint">
+      <p><b>Usuarios de demostración:</b></p>
+      <ul>
+        <li><code>admin</code> / <code>admin123</code> — Equipo PATY HOUSE</li>
+        <li><code>municipalidad</code> / <code>muni123</code> — Municipalidad de Puno</li>
+        <li><code>albergue</code> / <code>albergue123</code> — Patitas Felices</li>
+        <li><code>veterinaria</code> / <code>vet123</code> — Veterinaria UNAP</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
