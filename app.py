@@ -22,6 +22,10 @@ DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:///paty_house.db')
 if DATABASE_URL.startswith('postgres://'):
     DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
 
+# Forzar psycopg v3 (compatible con Python 3.14)
+if DATABASE_URL.startswith('postgresql://') and '+psycopg' not in DATABASE_URL:
+    DATABASE_URL = DATABASE_URL.replace('postgresql://', 'postgresql+psycopg://', 1)
+
 if 'channel_binding' in DATABASE_URL:
     from urllib.parse import urlparse, parse_qs, urlunparse
     parsed = urlparse(DATABASE_URL)
